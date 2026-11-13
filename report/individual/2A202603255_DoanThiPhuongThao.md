@@ -159,19 +159,19 @@ Nguồn ảnh: COCO val2017 / Wikimedia Commons.
 
 1. Lỗi bạn mắc nhiều nhất hôm nay, và cách bạn sẽ tránh ở dự án thật:
 
-   ...
+Lỗi tôi cần chú ý nhất trong quá trình gán nhãn là xác định vị trí và phân biệt trái/phải của các keypoints, đặc biệt trong những trường hợp người quay lưng, tay chân bắt chéo hoặc bị che khuất. Nếu xác định sai vị trí hoặc nhầm thứ tự keypoints, skeleton có thể không phản ánh chính xác tư thế của người trong ảnh. Để tránh lỗi này trong các dự án thực tế, tôi sẽ kiểm tra lần lượt 17 keypoints theo đúng thứ tự COCO, đối chiếu cấu trúc skeleton và xem lại các trường hợp bất thường trước khi xuất dữ liệu.
 
 2. Một quy tắc bạn đề xuất thêm vào guideline (kèm ảnh ví dụ nếu có):
 
-   ...
+Tôi đề xuất bổ sung quy tắc kiểm tra trái/phải đối với người quay lưng và người có tư thế xoay nghiêng. Guideline nên có hình minh họa riêng cho người quay mặt, quay lưng và nhìn nghiêng để người gán nhãn xác định đúng bên trái, bên phải theo cơ thể của đối tượng thay vì theo vị trí trên ảnh. Ngoài ra, nên yêu cầu kiểm tra lại các cặp keypoints đối xứng như mắt, vai, khuỷu tay, cổ tay, hông, đầu gối và mắt cá chân trước khi hoàn thành annotation.
 
 3. Nhãn của bạn đi vào model ở đâu? Chọn một lỗi bạn đã sửa và nói nó sẽ làm model học sai thế nào (heatmap, trọng số trong loss, hay bước lật ảnh):
 
-   ...
+Các nhãn keypoints được sử dụng để tạo ground-truth heatmap trong quá trình huấn luyện mô hình pose estimation. Mỗi keypoint tương ứng với một vị trí mục tiêu mà mô hình cần học cách dự đoán. Nếu gán nhầm left_wrist thành right_wrist, tọa độ mục tiêu của hai cổ tay có thể bị đảo ngược, khiến mô hình học sai vị trí của các bộ phận cơ thể. Đặc biệt, khi kết hợp với kỹ thuật horizontal flip, việc không hoán đổi đúng các cặp keypoints trái/phải sẽ làm dữ liệu huấn luyện thiếu nhất quán và ảnh hưởng đến độ chính xác dự đoán.
 
 ## 8. Khó khăn và lỗi kỹ thuật
 
-...
+Trong quá trình thực hiện bài Lab4, tôi gặp một số khó khăn về môi trường và thao tác xử lý dữ liệu: Lỗi đường dẫn khi di chuyển thư mục CVAT, Lỗi khởi động Traefik.
 
 ## Bonus (nếu làm)
 
@@ -213,5 +213,4 @@ Kết quả `src/check_submission.py` cho `HoVaTen_bonus_persons.zip`:
    ...
 
 ## 9. Tài liệu tham khảo và công cụ AI đã dùng
-
-...
+Cvat. Claude.
