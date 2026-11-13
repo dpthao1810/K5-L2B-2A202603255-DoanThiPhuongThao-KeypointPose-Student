@@ -88,23 +88,52 @@ Tự kiểm tay trong file JSON:
 
 | File | Người / mặt kiểm (ảnh, thứ tự) | Số phần tử `keypoints` | Điểm `outside` ra `v = 0`, `occluded` ra `v = 1`? | `num_keypoints` khớp? |
 |---|---|---:|---|---|
-| `DoanThiPhuongThao_persons.zip` | |51  | | |
-| `DoanThiPhuongThao.zip` | | | | |
-| `DoanThiPhuongThao_faces.zip` | | | | |
+| `DoanThiPhuongThao_persons.zip` |Person |51  |Có | Có|
+| `DoanThiPhuongThao.zip` |Person |51 |Có |Có |
+| `DoanThiPhuongThao_faces.zip` |Face |39 | Có|Có |
 
-Sau khi xuất, CVAT ghi `occluded` thành `v = ___` và `outside` thành `v = ___`. Tọa độ của điểm `outside` trong file là `0, 0` hay tọa độ cũ? ___
+Sau khi xuất, CVAT ghi `occluded` thành `v = 1` và `outside` thành `v = 0`. Tọa độ của điểm `outside` trong file là tọa độ cũ.
 
-Hai job đã chuyển sang completed trên CVAT? Có / Không
+Hai job đã chuyển sang completed trên CVAT? Có
 
 Dán phần **TÓM TẮT** in ra từ `src/check_submission.py`:
 
-```text
-(dán ở đây)
-```
+- File person: DoanThiPhuongThao_persons.zip
+  Số ảnh: 12 · số skeleton person: 27 · mỗi annotation 51 số
+  Skeleton theo ảnh: 000000021235=1, 000000023424=3,
+  000000078170=2, 000000150500=1, 000000253584=6,
+  000000326480=4, 000000375535=3, 000000399983=1,
+  000000431988=2, 000000445187=1, 000000451084=1,
+  000000467300=2
+  Cờ v: v=2 387 (84%) · v=1 0 (0%) · v=0 72 (16%)
+  num_keypoints trung bình: 14.3
+
+- File face: DoanThiPhuongThao_faces.zip
+  Số ảnh: 8 · số skeleton face: 8 · mỗi annotation 39 số
+  Skeleton theo ảnh: face_122747=1, face_137371=1,
+  face_141135=1, face_186226=1, face_294580=1,
+  face_380639=1, face_41666=1, face_505385=1
+  Cờ v: v=2 104 (100%) · v=1 0 (0%) · v=0 0 (0%)
+  num_keypoints trung bình: 13.0
+
+- Ghi chú: 72 điểm v = 0 vẫn mang tọa độ cũ
+  (CVAT 2.x xuất như vậy; chuẩn COCO ghi 0, 0).
+  Không phải lỗi: điểm v = 0 bị bỏ qua khi huấn luyện và khi chấm.
+
+- Số [LỖI]: 0 · số [CẢNH BÁO]: 8
+  Kết quả: ĐẠT
 
 Các `[CẢNH BÁO]` còn giữ nguyên và lý do:
 
-...
+... [CẢNH BÁO] 000000023424.jpg #3: các điểm chỉ trải cao 22 px (< 60 px). Người dưới 60 px không gán; nếu người cao hơn nhưng bị cắt khung thì bỏ qua cảnh báo này.
+  [CẢNH BÁO] 000000253584.jpg #1: các điểm chỉ trải cao 29 px (< 60 px). Người dưới 60 px không gán; nếu người cao hơn nhưng bị cắt khung thì bỏ qua cảnh báo này.
+  [CẢNH BÁO] 000000253584.jpg #2: các điểm chỉ trải cao 28 px (< 60 px). Người dưới 60 px không gán; nếu người cao hơn nhưng bị cắt khung thì bỏ qua cảnh báo này.
+  [CẢNH BÁO] 000000253584.jpg #3: các điểm chỉ trải cao 18 px (< 60 px). Người dưới 60 px không gán; nếu người cao hơn nhưng bị cắt khung thì bỏ qua cảnh báo này.
+  [CẢNH BÁO] 000000253584.jpg #5: các điểm chỉ trải cao 50 px (< 60 px). Người dưới 60 px không gán; nếu người cao hơn nhưng bị cắt khung thì bỏ qua cảnh báo này.
+  [CẢNH BÁO] 000000326480.jpg #4: các điểm chỉ trải cao 27 px (< 60 px). Người dưới 60 px không gán; nếu người cao hơn nhưng bị cắt khung thì bỏ qua cảnh báo này.
+  [CẢNH BÁO] 000000399983.jpg #1: cặp wrist nằm ngược phía so với các cặp còn lại. Có thể đổi trái/phải một cặp (`lr_swap`), hoặc tay / chân bắt chéo thật: kiểm lại.
+  [CẢNH BÁO] 000000431988.jpg #2: thấy rõ mũi và hai mắt (v = 2) nhưng các điểm left nằm bên TRÁI ảnh, tức là gán như người quay lưng. Kiểm lại hướng người (`lr_swap` cả người?).
+  Các cảnh báo còn giữ nguyên chủ yếu liên quan đến kích thước người nhỏ và khả năng xác định hướng trái – phải. Đối với các trường hợp người có chiều cao keypoint dưới 60 px, cần đối chiếu ảnh gốc để xác định người có thực sự nhỏ hay bị cắt khỏi khung hình. Đối với hai cảnh báo về wrist và hướng người, cần kiểm tra lại cấu trúc skeleton, vị trí các khớp và hướng cơ thể để tránh lỗi đảo trái – phải. Tôi không tự ý chỉnh sửa dữ liệu chỉ để loại bỏ cảnh báo khi chưa có đủ căn cứ. Script không phát hiện lỗi nghiêm trọng và kết quả tổng thể là ĐẠT.
 
 ## 6. Ảnh chụp màn hình
 
