@@ -1,0 +1,43 @@
+{
+ "mssv": "2A202603255",
+ "ten": "DoanThiPhuongThao",
+ "pool_version": "d04-k5-v2",
+ "cvat_user": "2A202603255",
+ "project": "d04-keypoint",
+ "persons": [
+  "000000021235.jpg",
+  "000000150500.jpg",
+  "000000399983.jpg",
+  "000000445187.jpg",
+  "000000451084.jpg",
+  "000000078170.jpg",
+  "000000375535.jpg",
+  "000000467300.jpg",
+  "000000023424.jpg",
+  "000000431988.jpg",
+  "000000253584.jpg",
+  "000000326480.jpg"
+ ],
+ "faces": [
+  "face_122747.jpg",
+  "face_141135.jpg",
+  "face_380639.jpg",
+  "face_137371.jpg",
+  "face_505385.jpg",
+  "face_186226.jpg",
+  "face_294580.jpg",
+  "face_41666.jpg"
+ ],
+ "tasks": {
+  "persons": {
+   "task_id": 1,
+   "job_id": 1,
+   "task_name": "persons-DoanThiPhuongThao"
+  },
+  "faces": {
+   "task_id": 2,
+   "job_id": 2,
+   "task_name": "faces-DoanThiPhuongThao"
+  }
+ }
+}
